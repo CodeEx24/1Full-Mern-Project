@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Score Board</title>
+
+  <!-- styles -->
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="css/index.css">
+</head>
+
+<body>
+  <section class="hero-section">
+    <div class="container">
+      <div class="left-col">
+        <h2>Home</h2>
+        <h1 id="homeScore-el">00</h1>
+        <div class="btn-add">
+            <button onclick="add1Home()">+1</button>
+            <button onclick="add2Home()">+2</button>
+            <button onclick="add3Home()">+3</button>
+        </div>
+      </div>
+      <div class="right-col">
+        <h2>Guest</h2>
+        <h1 id="guestScore-el">00</h1>
+        <div class="btn-add">
+            <button onclick="add1Guest()">+1</button>
+            <button onclick="add2Guest()">+2</button>
+            <button onclick="add3Guest()">+3</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="index.js"></script>
+</body>
+
+</html>
