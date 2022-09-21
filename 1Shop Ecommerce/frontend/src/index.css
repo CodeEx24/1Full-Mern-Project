@@ -1,0 +1,25 @@
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.container {
+  width: 1080px;
+  margin: 0 auto;
+}
+
+header {
+  height: 10vh;
+  display: flex;
+  align-items: center;
+  border: 1px solid red;
+}
+
+.header--name {
+  color: black;
+  font-size: 2em;
+  font-weight: 700;
+  text-decoration: none;
+}
