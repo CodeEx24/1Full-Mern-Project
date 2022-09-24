@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useContext, useEffect, useReducer } from 'react';
+import { useContext, useEffect, useReducer, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Rating from '../components/Rating';
 import Col from 'react-bootstrap/esm/Col';
@@ -7,13 +7,12 @@ import Row from 'react-bootstrap/esm/Row';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Badge from 'react-bootstrap/Badge';
 import Button from 'react-bootstrap/Button';
-import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import LoadingBox from '../components/LoadingBox.js';
-import { Alert } from 'bootstrap';
 import MessageBox from '../components/MessageBox';
 import { getError } from '../utils';
 import { Store } from '../Store';
+import ButtonCart from '../components/ButtonCart.js';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -51,13 +50,28 @@ export default function ProductScreen() {
     fetchData();
   }, [slug]);
 
-  const { state, dispatch: ctxDispatch } = useContext(Store);
-  function addToCartHandler() {
+  const { state: ctxState, dispatch: ctxDispatch } = useContext(Store);
+  async function addToCartHandler() {
+    //Checking if the Item is exist in the cart
+    const existItem = ctxState.cart.cartItems.find(
+      (item) => item._id === product._id
+    );
+    const quantity = existItem ? existItem.quantity + 1 : 1;
+    const { data } = await axios.get(`/api/products/${product._id}`);
+
+    if (data.countInStock < quantity) {
+      setShow(true);
+      return;
+    }
+
     ctxDispatch({
       type: 'ADD_CART_ITEM',
-      payload: { ...product, quantity: 1 },
+      payload: { ...product, quantity },
     });
   }
+
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
 
   return loading ? (
     <LoadingBox />
@@ -110,9 +124,11 @@ export default function ProductScreen() {
             </ListGroup.Item>
             {product.countInStock > 0 && (
               <ListGroup.Item>
-                <Button onClick={addToCartHandler} variant="primary">
-                  Add to Cart
-                </Button>
+                <ButtonCart
+                  handleClose={handleClose}
+                  addToCartHandler={addToCartHandler}
+                  show={show}
+                />
               </ListGroup.Item>
             )}
           </ListGroup>

@@ -9,6 +9,16 @@ body {
   border: 1px solid red;
 }
 
+img {
+  padding: 0;
+  margin: 0;
+}
+
+h5 {
+  padding: 0;
+  margin: 0;
+}
+
 p {
   margin: 0;
   padding: 0;
@@ -133,4 +143,13 @@ main {
 
 .badge {
   --bs-badge-margin-left: 20px;
+}
+
+.cart-popover {
+  width: 400px;
+}
+
+.img-thumbnail {
+  height: 80px;
+  width: 95px;
 }

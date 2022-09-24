@@ -17,8 +17,12 @@ export default function Product(props) {
         </Link>
         <Rating rating={product.rating} numReviews={product.numReviews} />
         <Card.Text>${product.price}</Card.Text>
-        <Button className="btn-primary" variant="primary">
-          Add to Cart
+        <Button
+          className="btn-primary"
+          variant="primary"
+          disabled={product.countInStock === 0}
+        >
+          {product.countInStock > 1 ? 'Add to Cart' : 'Out of Stock'}
         </Button>
       </Card.Body>
     </Card>
