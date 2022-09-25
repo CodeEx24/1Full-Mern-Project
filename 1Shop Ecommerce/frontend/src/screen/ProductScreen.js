@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useContext, useEffect, useReducer, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import Rating from '../components/Rating';
 import Col from 'react-bootstrap/esm/Col';
 import Row from 'react-bootstrap/esm/Row';
@@ -12,7 +12,7 @@ import LoadingBox from '../components/LoadingBox.js';
 import MessageBox from '../components/MessageBox';
 import { getError } from '../utils';
 import { Store } from '../Store';
-import ButtonCart from '../components/ButtonCart.js';
+import AddToCart from '../components/AddToCart.js';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -28,6 +28,7 @@ const reducer = (state, action) => {
 };
 
 export default function ProductScreen() {
+  const navigate = useNavigate();
   const params = useParams();
   const { slug } = params;
 
@@ -124,11 +125,23 @@ export default function ProductScreen() {
             </ListGroup.Item>
             {product.countInStock > 0 && (
               <ListGroup.Item>
-                <ButtonCart
+                <AddToCart
+                  variant="primary"
                   handleClose={handleClose}
-                  addToCartHandler={addToCartHandler}
+                  clickHandler={addToCartHandler}
                   show={show}
+                  disabled={false}
+                  text="Add to Cart"
                 />
+                {/* <Button
+          handleClose={handleClose}
+          show={show}
+          1className="btn-primary"
+          variant={product.countInStock > 0 ? 'primary' : 'light'}
+          clickHandler={() => addToCartHandler(product)}
+          disabled={product.countInStock === 0}
+          1text={product.countInStock > 0 ? 'Add to Cart' : 'Out of Stock'}
+        ></Button> */}
               </ListGroup.Item>
             )}
           </ListGroup>

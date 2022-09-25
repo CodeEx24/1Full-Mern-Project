@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
@@ -7,10 +7,11 @@ import { Helmet } from 'react-helmet-async';
 import { Store } from '../Store';
 import MessageBox from '../components/MessageBox';
 import ListGroup from 'react-bootstrap/ListGroup';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 export default function CartScreen() {
+  const navigate = useNavigate();
   const { state, dispatch: ctxDispatch } = useContext(Store);
   const {
     cart: { cartItems },
@@ -20,8 +21,18 @@ export default function CartScreen() {
     ctxDispatch({ type: 'DELETE_CART_ITEM', payload: item });
   }
 
-  async function updateCardHandler(item, quantity) {
+  async function updateCartHandler(item, quantity) {
     const { data } = await axios.get(`/api/products/${item._id}`);
+
+    ctxDispatch({
+      type: 'ADD_CART_ITEM',
+      payload: { ...item, quantity },
+      //quantity: quantity
+    });
+  }
+
+  function checkoutHandler() {
+    navigate('/signin?redirect=/shipping');
   }
 
   return (
@@ -55,7 +66,7 @@ export default function CartScreen() {
                       <Col md={3}>
                         <Button
                           onClick={() =>
-                            updateCardHandler(item, item.quantity + 1)
+                            updateCartHandler(item, item.quantity - 1)
                           }
                           variant="light"
                           disabled={item.quantity === 1}
@@ -65,7 +76,7 @@ export default function CartScreen() {
                         <span>{item.quantity}</span>
                         <Button
                           onClick={() =>
-                            updateCardHandler(item, item.quantity + 1)
+                            updateCartHandler(item, item.quantity + 1)
                           }
                           variant="light"
                           disabled={item.quantity === item.countInStock}
@@ -117,6 +128,7 @@ export default function CartScreen() {
                       type="button"
                       variant="primary"
                       disabled={cartItems.length === 0}
+                      onClick={checkoutHandler}
                     >
                       Proceed to Checkout
                     </Button>
