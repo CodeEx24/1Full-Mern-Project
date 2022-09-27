@@ -69,6 +69,7 @@ export default function ProductScreen() {
       type: 'ADD_CART_ITEM',
       payload: { ...product, quantity },
     });
+    // navigate('/cart'); -If want to redirect in cart
   }
 
   const [show, setShow] = useState(false);
