@@ -16,6 +16,8 @@ import Popover from 'react-bootstrap/Popover';
 import CartScreen from './screen/CartScreen';
 import SigninScreen from './screen/SigninScreen';
 import ShippingAddressScreen from './screen/ShippingAddressScreen';
+import SignupScreen from './screen/SignupScreen';
+import PaymentMethodScreen from './screen/PaymentMethodScreen';
 
 function App() {
   const { state, dispatch: ctxDispatch } = useContext(Store);
@@ -42,6 +44,7 @@ function App() {
     ctxDispatch({ type: 'USER_SIGNOUT' });
     localStorage.removeItem('userInfo');
     localStorage.removeItem('shippingAddress');
+    localStorage.removeItem('paymentMethod');
   }
 
   return (
@@ -111,6 +114,8 @@ function App() {
               <Route path="/product/:slug" element={<ProductScreen />}></Route>
               <Route path="/cart" element={<CartScreen />}></Route>
               <Route path="/signin" element={<SigninScreen />}></Route>
+              <Route path="/signup" element={<SignupScreen />}></Route>
+              <Route path="/payment" element={<PaymentMethodScreen />}></Route>
               <Route
                 path="/shipping"
                 element={<ShippingAddressScreen />}
