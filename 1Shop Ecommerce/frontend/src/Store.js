@@ -1,4 +1,4 @@
-import { createContext, useEffect, useReducer } from 'react';
+import { createContext, useReducer } from 'react';
 
 export const Store = createContext();
 
@@ -71,10 +71,11 @@ function reduce(state, action) {
         cart: {
           ...state.cart,
           paymentMethod: action.payload,
-          cartItems: [],
-          shippingAddress: {},
         },
       };
+    }
+    case 'CART_CLEAR': {
+      return { ...state, cart: { ...state.cart, cartItems: [] } };
     }
     default:
       return state;

@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import saveSeedRouter from './routes/saveSeedRoutes.js';
 import productRouter from './routes/productRoutes.js';
 import userRouter from './routes/userRoutes.js';
+import orderRouter from './routes/orderRoutes.js';
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/seed', saveSeedRouter);
 app.use('/api/products', productRouter);
 app.use('/api/users', userRouter);
+app.use('/api/orders', orderRouter);
 
 //Express async handler for the error (userRoutes.js) in router.post
 app.use((err, req, res, next) => {
