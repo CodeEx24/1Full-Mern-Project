@@ -13,6 +13,7 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 import LoadingBox from '../components/LoadingBox';
 
+//reducer function for fetching data information if it is successfully fetch
 const reducer = (state, action) => {
   switch (action.type) {
     case 'CREATE_REQUEST':
@@ -27,14 +28,18 @@ const reducer = (state, action) => {
 };
 
 export default function PlaceOrderScreen() {
+  //state and ctxDispatch coming from the context Store (Getting the state value from store)
   const { state, dispatch: ctxDispatch } = useContext(Store);
+  //Get the specific data in the state which is the cart and the userInfo
   const { cart, userInfo } = state;
   const navigate = useNavigate();
 
+  //useReducer with the default value of loading false
   const [{ loading }, dispatch] = useReducer(reducer, {
     loading: false,
   });
 
+  //Calculation for the total in the cart (Order Total)
   const round2 = (num) => Math.round(num * 100 + Number.EPSILON) / 100; // 123.2345 => 123.23
   cart.itemsPrice = round2(
     cart.cartItems.reduce((a, c) => a + c.quantity * c.price, 0)
@@ -45,8 +50,9 @@ export default function PlaceOrderScreen() {
 
   async function placeOrderHandler() {
     try {
+      //Requesting and fetch data in the backend. Post is also used so the data will be hidden.
       dispatch({ type: 'CREATE_REQUEST' });
-
+      //Post the data or save the data in the backend.
       const { data } = await axios.post(
         '/api/orders',
         {
@@ -64,22 +70,30 @@ export default function PlaceOrderScreen() {
           },
         }
       );
+      //After saving the data the context Store value state must delete the cart items in it.
       ctxDispatch({ type: 'CART_CLEAR' });
+      //Telling if the creation of order is success
       dispatch({ type: 'CREATE_SUCCESS' });
+      //RemoveItem in cartItems that is save in localstorage.
       localStorage.removeItem('cartItems');
+      //navigate to the order details
       navigate(`/order/${data.order._id}`);
     } catch (err) {
+      //If the creation of data is fail the toast will pop up to show the error
       dispatch({ type: 'CREATE_FAIL' });
+      //getError is coming from the utils to return the error message.
       toast.error(getError(err));
     }
   }
 
   useEffect(() => {
+    //If there are no current payment method selected navigate to the /payment
     if (!cart.paymentMethod) {
       navigate('/payment');
     }
   }, [cart, navigate]);
 
+  //User Interface for place order screen
   return (
     <div>
       <CheckoutSteps step1 step2 step3 step4 />
@@ -143,6 +157,8 @@ export default function PlaceOrderScreen() {
             </Card.Body>
           </Card>
         </Col>
+
+        {/* Order Summary Details */}
         <Col md={4}>
           <Card.Body>
             <Card.Title>Order Summary</Card.Title>

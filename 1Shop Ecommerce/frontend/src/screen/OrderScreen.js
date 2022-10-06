@@ -12,7 +12,9 @@ import { Store } from '../Store';
 import { getError } from '../utils';
 import MessageBox from '../components/MessageBox';
 
+// Reducer function for controlling the case in useReducer
 function reducer(state, action) {
+  // Action type to perform on different cases
   switch (action.type) {
     case 'FETCH_REQUESTS':
       return { ...state, loading: true, error: '' };
@@ -26,23 +28,32 @@ function reducer(state, action) {
 }
 
 export default function OrderScreen() {
+  // Getting the value of state and function dispatch coming from the store context
   const { state, dispatch: ctxDispatch } = useContext(Store);
+  // Getting the specific userInformation for the UI
   const { userInfo } = state;
 
+  //Parameter of the screen order (Order ID)
   const params = useParams();
   const { id: orderId } = params;
+
   const navigate = useNavigate();
 
+  //useReducer for fetching the data to know if it is successfully fetch or an error occured in fetching data
   const [{ loading, error, order }, dispatch] = useReducer(reducer, {
     loading: true,
     order: {},
     error: '',
   });
 
+  //UseEffect for fetching the data. If there are something changes like ID in params the useEffect will run again to fetch that orderID data.
   useEffect(() => {
+    //This will not run until it was called in the program.
     async function fetchOrder() {
+      //Try catch block for fetching the data if there is an error in fetching data the catch will run.
       try {
         dispatch({ type: 'FETCH_REQUEST' });
+        //Fetching the data from the backend
         const { data } = await axios.get(`/api/orders/${orderId}`, {
           headers: { authorization: `Bearer ${userInfo.token}` },
         });
@@ -52,25 +63,32 @@ export default function OrderScreen() {
       }
     }
 
+    //Check if the userInformation coming from the state (Context of the store)
     if (!userInfo) {
       return navigate('/login');
     }
+    //If statement above is true. Check for the orderID if it exists. if it exist and it is not equal to parameter of orderID fetch for another data.
     if (!order._id || (order._id && order._id !== orderId)) {
       fetchOrder();
     }
   }, [order, userInfo, orderId, navigate]);
 
+  //Will check for the data if it is loading then render the loading box.
   return loading ? (
     <LoadingBox></LoadingBox>
-  ) : error ? (
+  ) : // If there is an error the message box will show for the users to notify what's wrong
+  error ? (
     <MessageBox variant="danger">{error}</MessageBox>
   ) : (
+    //Else render the Specific order details of the orderID
     <div>
       <Helmet>
-        <title>Order {orderId}</title>
+        {/* Title of the page in tab */}
+        <title>Order: {orderId}</title>
       </Helmet>
-      <h1 className="my-3">Order {orderId}</h1>
+      <h1 className="my-3">Order Screen #{orderId}</h1>
       <Row>
+        {/* Order details of the client name, address and process */}
         <Col md={8}>
           <Card className="mb-3">
             <Card.Body>
@@ -90,6 +108,8 @@ export default function OrderScreen() {
               )}
             </Card.Body>
           </Card>
+
+          {/* Payment method details */}
           <Card className="mb-3">
             <Card.Body>
               <Card.Title>Payment</Card.Title>
@@ -106,6 +126,7 @@ export default function OrderScreen() {
             </Card.Body>
           </Card>
 
+          {/* Item order details */}
           <Card className="mb-3">
             <Card.Body>
               <Card.Title>Items</Card.Title>
@@ -132,6 +153,8 @@ export default function OrderScreen() {
             </Card.Body>
           </Card>
         </Col>
+
+        {/* Order summary total */}
         <Col md={4}>
           <Card className="mb-3">
             <Card.Body>

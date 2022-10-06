@@ -16,10 +16,13 @@ export default function SigninScreen() {
   const redirectedUrl = new URLSearchParams(search).get('redirect'); //RURL = /shipping
   const redirect = redirectedUrl ? redirectedUrl : '/'; //Redirect = /shipping
 
+  //email and password as an empty string
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  //state and dispatch coming from the context Store
   const { state, dispatch: ctxDispatch } = useContext(Store);
+  //Getting the userInfo coming from the state
   const { userInfo } = state;
   const navigate = useNavigate();
 
@@ -27,19 +30,25 @@ export default function SigninScreen() {
     //to prevent refreshing the page
     e.preventDefault();
     try {
+      //request for the data in the backend
       const { data } = await axios.post('/api/users/signin', {
         email,
         password,
       });
+      //Save the data as payload
       ctxDispatch({ type: 'USER_SIGNIN', payload: data });
+      //Save the user information in the local storage
       localStorage.setItem('userInfo', JSON.stringify(data));
+      //navigate user to redirect or in /
       navigate(redirect || '/');
     } catch (err) {
+      //If there is an error show the error message
       toast.error(getError(err));
     }
   }
 
   useEffect(() => {
+    //If userInfo exist navigate to the shipping (redirect property)
     if (userInfo) {
       navigate(redirect);
     }
@@ -54,6 +63,7 @@ export default function SigninScreen() {
         </Helmet>
         <h1 className="my-3 mt-5">Sign In</h1>
         <Form onSubmit={submitHandler}>
+          {/* Email Address */}
           <Form.Group className="mb-3" controlId="email">
             <Form.Label>Email address</Form.Label>
             <Form.Control
@@ -66,6 +76,7 @@ export default function SigninScreen() {
             </Form.Text>
           </Form.Group>
 
+          {/* Password */}
           <Form.Group className="mb-3" controlId="password">
             <Form.Label>Password</Form.Label>
             <Form.Control
@@ -74,9 +85,12 @@ export default function SigninScreen() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </Form.Group>
+
           <div className="mb-3">
             <Button type="submit">Sign In</Button>
           </div>
+
+          {/* New Customer */}
           <div className="mb-3">
             New Customer ?{' '}
             <Link to={`/signup?redirect=${redirect}`}>Create your Account</Link>

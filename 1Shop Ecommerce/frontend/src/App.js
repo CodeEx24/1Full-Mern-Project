@@ -52,12 +52,14 @@ function App() {
   return (
     <BrowserRouter>
       <div className="d-flex flex-column site-container">
+        {/* ToastContainer so the child elements can access the toast and make a pop up for that specific screen */}
         <ToastContainer
           position="bottom-center"
           autoClose={3000}
           closeOnClick
           rtl={false}
           pauseOnHover={false}
+          limit={1}
         />
         <header>
           <Navbar bg="dark" variant="dark">
@@ -66,11 +68,13 @@ function App() {
                 <Navbar.Brand href="#home">JBShop</Navbar.Brand>
               </LinkContainer>
               <Nav className="ml-auto">
+                {/* Added in the cart overlay (Hover) */}
                 <OverlayTrigger
                   trigger={['hover', 'hover']}
                   placement="bottom"
                   overlay={popover}
                 >
+                  {/* Cart Link and check if there are added items in the cart */}
                   <Link to="/cart" className="nav-link">
                     Cart
                     {cart.cartItems.length > 0 && (
@@ -83,6 +87,8 @@ function App() {
                     )}
                   </Link>
                 </OverlayTrigger>
+
+                {/* Check if userInfo is already login */}
                 {userInfo ? (
                   <NavDropdown title={userInfo.name} id="basic-nav-dropdown">
                     <LinkContainer to="/profile">
@@ -111,6 +117,7 @@ function App() {
         </header>
         <main>
           <Container className="mt-5">
+            {/* Destination path of each page like Home Page, Cart, etc. */}
             <Routes>
               <Route path="/" element={<Homescreen />}></Route>
               <Route path="/product/:slug" element={<ProductScreen />}></Route>
